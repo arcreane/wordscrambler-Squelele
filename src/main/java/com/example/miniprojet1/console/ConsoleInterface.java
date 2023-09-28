@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
-public class ScrambleGame {
+public class ScrambleConsoleGame {
     public void ConsoleStart() {
         Scanner scanner = new Scanner(System.in);
         while (true){
