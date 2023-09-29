@@ -1,4 +1,6 @@
-package com.example.miniprojet1;
+package com.example.miniprojet1.console;
+
+import com.example.miniprojet1.game.ScrambleGame;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -6,9 +8,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
-public class ScrambleConsoleGame {
+public class ConsoleInterface {
+    private ScrambleGame game;
     public void ConsoleStart() {
         Scanner scanner = new Scanner(System.in);
+        game = new ScrambleGame();
         while (true){
             // Demander à l'utilisateur de choisir la difficulté
             System.out.print("Vous allez participer au jeu Scramble Word." +
@@ -19,25 +23,23 @@ public class ScrambleConsoleGame {
             int choixDifficult = chooseDifficulty(scanner);
 
             // Charger les mots de la bonne difficulté depuis le fichier
-            List<String> wordList = loadWordsFromFileConsole("src/main/resources/words.txt", choixDifficult);
+            String wordList = game.selectWord();
+            String shuffleword = game.shuffleWord();
             if (wordList.isEmpty()) {
                 System.out.println("Aucun mot trouvé pour cette difficulté.");
                 return;
             }
+            game.shuffleWord();
 
-            // Sélectionner un mot aléatoire et le mélanger
-            String randomWord = selectRandomWord(wordList);
-            String shuffledWord = shuffleWord(randomWord);
-
-            System.out.println("Voici la chaîne de caractères mélangée : " + shuffledWord);
+            System.out.println("Voici la chaîne de caractères mélangée : " + shuffleword);
 
             // Demander à l'utilisateur de deviner le mot
-            boolean success = playGameConsole(scanner, randomWord);
+            boolean success = playGameConsole(scanner);
 
             if (success) {
                 System.out.println("Bravo, vous avez trouvé le mot !\n");
             } else {
-                System.out.println("Dommage, le mot était : " + randomWord+"");
+                System.out.println("Dommage, le mot était : " + wordList);
             }
             ContinueConsoleGame(scanner);
         }
@@ -55,65 +57,21 @@ public class ScrambleConsoleGame {
         int choixDifficult;
         do {
             choixDifficult = scanner.nextInt();
-        } while (choixDifficult < 3 || choixDifficult > 26);
+        } while (choixDifficult < ScrambleGame.MIN_DIF || choixDifficult > ScrambleGame.MAX_DIF);
         scanner.nextLine(); // Consommer la ligne restante
+        game.setDifficulty(choixDifficult);
         return choixDifficult;
     }
 
-    private List<String> loadWordsFromFileConsole(String filePath, int choixDifficult) {
-        List<String> wordList = new ArrayList<>();
-        File file = new File(filePath);
+    private boolean playGameConsole(Scanner scanner) {
 
-        if (!file.exists()) {
-            System.out.println("Le fichier n'existe pas.");
-            return wordList;
-        }
-
-        try (FileReader fileReader = new FileReader(file);
-             BufferedReader bufferedReader = new BufferedReader(fileReader)) {
-
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                line = line.trim();
-                if (line.length() == choixDifficult) {
-                    wordList.add(line);
-                }
-            }
-        } catch (IOException e) {
-            System.err.println("Une erreur s'est produite lors de la lecture du fichier : " + e.getMessage());
-        }
-        return wordList;
-    }
-
-    private String selectRandomWord(List<String> wordList) {
-        Random random = new Random();
-        int randomIndex = random.nextInt(wordList.size());
-        return wordList.get(randomIndex);
-    }
-
-    private String shuffleWord(String word) {
-        char[] charArray = word.toCharArray();
-        Random random = new Random();
-        for (int i = 0; i < 100; i++) {
-            int index1 = random.nextInt(charArray.length);
-            int index2 = random.nextInt(charArray.length);
-            char temp = charArray[index1];
-            charArray[index1] = charArray[index2];
-            charArray[index2] = temp;
-        }
-        return new String(charArray);
-    }
-
-    private boolean playGameConsole(Scanner scanner, String correctWord) {
-        boolean success = false;
         for (int i = 1; i <= 5; i++) {
             System.out.print("Essai n°" + i + ": ");
             String input = scanner.nextLine();
-            if (input.equals(correctWord)) {
-                success = true;
-                break;
+            if(game.testUserProposition(input)){
+                return true;
             }
         }
-        return success;
+        return false;
     }
 }

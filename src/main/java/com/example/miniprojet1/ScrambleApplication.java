@@ -13,27 +13,14 @@ public class ScrambleApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(ScrambleApplication.class.getResource("Scramble-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 380, 320);
-        stage.setTitle("ScrambleGame!");
+        FXMLLoader fxmlLoader = new FXMLLoader(ScrambleApplication.class.getResource("ScrambleChoice.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 220, 100);
+        stage.setTitle("ScrambleChoice");
         stage.setScene(scene);
         stage.show();
-
-        //stage.close();
     }
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Launch console by taping 'console' in the console or else");
-        String input;
-        input = scanner.nextLine();
-        if(input.equals("console")){
-            ScrambleGame cg = new ScrambleGame();
-            cg.ConsoleStart();
-
-        } else {
             launch();
-        }
-
     }
 }
