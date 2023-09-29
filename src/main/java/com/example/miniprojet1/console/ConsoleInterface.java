@@ -22,6 +22,8 @@ public class ConsoleInterface {
                     "\nChoississez votre difficulté : ");
             int choixDifficult = chooseDifficulty(scanner);
 
+            game.TimerSet();
+
             // Charger les mots de la bonne difficulté depuis le fichier
             String wordList = game.selectWord();
             String shuffleword = game.shuffleWord();
@@ -38,8 +40,10 @@ public class ConsoleInterface {
 
             if (success) {
                 System.out.println("Bravo, vous avez trouvé le mot !\n");
+                System.out.println("\nVous avez mis "+ game.TimerResult() +" secondes");
             } else {
                 System.out.println("Dommage, le mot était : " + wordList);
+                System.out.println("\nVous avez mis "+ game.TimerResult() +" secondes");
             }
             ContinueConsoleGame(scanner);
         }

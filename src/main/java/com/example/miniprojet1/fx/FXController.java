@@ -29,7 +29,6 @@ public class FXController implements Initializable {
     public int dinWin=1;
     public String trueWord;
 
-    public long startTime;
     public long elapsedTime;
 
 
@@ -47,7 +46,7 @@ public class FXController implements Initializable {
         ButtonReload.setDisable(false);
         ScrambleWord.setText(game.shuffleWord());
         this.TextArea.clear();
-        startTime = System.currentTimeMillis();
+        game.TimerSet();
         //this.TextArea.appendText("Difficulté choisie : "+ ((int) SliderDif.getValue()));
     }
     @FXML
@@ -55,8 +54,7 @@ public class FXController implements Initializable {
         this.TextArea.appendText("Essai n°" + essai + ": " + Field.getText()+"\n");
         if (game.testUserProposition(Field.getText())) {
             this.TextArea.appendText("\nBravo, vous avez trouvé le mot !\nDinner Winner, tu as gagné "+ dinWin +" fois");
-            elapsedTime = (System.currentTimeMillis() - startTime)/1000;
-            this.TextArea.appendText("\nVous avez mis "+ elapsedTime +" secondes");
+            this.TextArea.appendText("\nVous avez mis "+ game.TimerResult() +" secondes");
             ButtonValid.setDisable(true);
             this.winField.setText(""+dinWin);
             dinWin++;
@@ -65,8 +63,7 @@ public class FXController implements Initializable {
             if(essai>=6){
                 this.TextArea.appendText("\nVous avez perdu! Le mot était : "+ trueWord);
                 ButtonValid.setDisable(true);
-                elapsedTime = (System.currentTimeMillis() - startTime)/1000;
-                this.TextArea.appendText("\nVous avez mis "+ elapsedTime +" secondes");
+                this.TextArea.appendText("\nVous avez mis "+ game.TimerResult() +" secondes");
             }
         }
         this.Field.clear();
@@ -81,17 +78,16 @@ public class FXController implements Initializable {
         this.TextArea.clear();
         essai=1;
         ButtonValid.setDisable(false);
-        startTime = System.currentTimeMillis();
+
     }
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL url, ResourceBundle resourceBundle) {//bin du slide et du lable difficulté
         StringConverter<Number> converter = new NumberStringConverter();
         Bindings.bindBidirectional(DifField.textProperty(), SliderDif.valueProperty(), converter);
         //DifField.textProperty().bind( SliderDif.valueProperty());
         SliderDif.valueProperty().addListener((observable, oldValue, newValue) -> {
             int intValue = newValue.intValue();
-            // Utilisez 'intValue' comme un int dans votre application
             DifField.setText(String.valueOf(intValue));
         });
     }

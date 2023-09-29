@@ -14,6 +14,8 @@ public class ScrambleGame {
     private String correctWord;
     private String shuffledWord;
     private int choixDifficult;
+    public long startTime;
+    public long elapsedTime;
 
     public static final int MAX_DIF=26;
     public static final int MIN_DIF=3;
@@ -69,10 +71,14 @@ public class ScrambleGame {
 
     }
 
-    public void TimerGame(){
-
+    public long TimerSet(){
+        startTime = System.currentTimeMillis();
+        return startTime;
     }
-
+    public long TimerResult(){
+        elapsedTime = (System.currentTimeMillis() - startTime)/1000;
+        return elapsedTime;
+    }
     public boolean testUserProposition(String input){
         if (input.toUpperCase().equals(correctWord)) {
             return true;
